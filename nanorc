@@ -1,0 +1,44 @@
+# editing
+set softwrap
+set constantshow
+set autoindent
+set trimblanks
+set tabsize 4
+set tabstospaces
+set noconvert
+
+# editor
+set minibar
+set indicator
+set linenumbers
+set positionlog
+set constantshow
+set stateflags
+
+set mouse
+
+# interface colors
+set titlecolor bold,brightwhite,blue
+set statuscolor brightwhite,red
+set errorcolor bold,brightwhite,red
+set selectedcolor black,magenta
+set stripecolor yellow
+set numbercolor cyan
+
+# menu colors
+set keycolor brightcyan
+set functioncolor brightyellow
+
+# search/prompt colors
+set minicolor brightwhite,cyan
+set promptcolor brightyellow
+
+# keybindings
+bind M-/ comment main
+
+# backups
+set backup
+set backupdir "~/.nano_backups"
+
+# include all syntax highlighting
+include "/usr/share/nano/*.nanorc"

@@ -29,3 +29,19 @@ Link `vimrc` to your home directory as `.vimrc`. This allows updates in the repo
 ```shell
 ln -s ~/dotfiles/vimrc ~/.vimrc
 ```
+
+## Set the global gitignore file
+
+Use the `git config` command to point to the `git_global` file.
+
+```shell
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+You can also add it manually by editing the `.gitconfig` file.
+
+```shell
+[core]
+    excludesfile = ~/.gitignore_global
+``` 
+

@@ -1,0 +1,14 @@
+.vscode/
+*.log
+*.sqlite
+.env
+.env.local
+.env.auth
+.directory
+.Trash-*
+.nfs*
+.idea
+.obsidian/*
+*~
+.DS_Store
+.trash/

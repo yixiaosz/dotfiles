@@ -52,3 +52,7 @@ If you see the path to the `.gitignore_global` file, such as `Users/[username]/.
 ```shell
 git config core.excludesfile
 ```
+
+## Oh-my-zsh 
+
+My zsh uses oh-my-zsh to manage my plugins. Make sure you check out the `plugin=()` section in the `zshrc` and install the included plugins. 

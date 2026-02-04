@@ -45,3 +45,10 @@ You can also add it manually by editing the `.gitconfig` file.
     excludesfile = ~/.gitignore_global
 ``` 
 
+### Verify the git configuration
+
+If you see the path to the `.gitignore_global` file, such as `Users/[username]/.gitignore_global`, it's successfully configured. 
+
+```shell
+git config core.excludesfile
+```

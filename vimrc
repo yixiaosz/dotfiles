@@ -34,6 +34,7 @@ call plug#begin()
 " List your plugins here
 " Plug 'tpope/vim-sensible'
 Plug 'dense-analysis/ale'
+Plug 'LunarWatcher/auto-pairs'
 
 call plug#end()
 
@@ -46,7 +47,7 @@ let g:ale_linters = {'python':['ruff','pyright']}
 
 " Set Ruff as the formatter 
 " Ruff will format the code on save
-let g:ale_fixers = {'python':['ruff_format']}
+" let g:ale_fixers = {'python':['ruff_format']}
 
 " ALE auto fix files on save
 let g:ale_fix_on_save = 1

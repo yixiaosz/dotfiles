@@ -28,6 +28,12 @@ set shiftwidth=4
 " Use spaces instead of tabs
 set expandtab
 
+" Key remap
+noremap <c-h> <c-w><c-h>
+noremap <c-j> <c-w><c-j>
+noremap <c-k> <c-w><c-k>
+noremap <c-l> <c-w><c-l>
+
 " Vim-plug
 call plug#begin()
 
@@ -35,8 +41,16 @@ call plug#begin()
 " Plug 'tpope/vim-sensible'
 Plug 'dense-analysis/ale'
 Plug 'LunarWatcher/auto-pairs'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
 
 call plug#end()
+" Vim-plug commands (run in vim)
+" :PlugInstall to install the plugins
+" :PlugUpdate to install or update the plugins
+" :PlugDiff to review the changes from the last update
+" :PlugClean to remove plugins no longer in the list
 
 " Enable ALE for Python
 let g:ale_python_auto_enabled = 1
@@ -59,3 +73,7 @@ set updatetime=500
 " Custom ALE highlight groups
 highlight ALEError ctermbg=DarkRed guibg=DarkRed
 highlight ALEWarning ctermbg=DarkYellow guibg=DarkYellow
+
+" NerdTree configs
+" (1) Use <Ctrl-T> to turn on NerdTree
+noremap <C-t> :NERDTreeToggle<CR>

@@ -1,0 +1,5 @@
+/* Inline code background for both Reading and Editing modes */
+.markdown-rendered code, 
+.markdown-source-view.mod-cm6 .cm-inline-code {
+  background-color: rgb(228, 226, 230) !important;
+}

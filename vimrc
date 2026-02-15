@@ -41,7 +41,7 @@ call plug#begin()
 " List your plugins here
 " Plug 'tpope/vim-sensible'
 Plug 'dense-analysis/ale'                           " async lint engine: controls lintes & fixers
-Plug 'LunarWatcher/auto-pairs'                      " auto (parethesis) completion
+" Plug 'LunarWatcher/auto-pairs'                      " auto (parethesis) completion
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " auto update fzf when PlugInstall
 Plug 'junegunn/fzf.vim'                             " fuzzy search tool
 Plug 'preservim/nerdtree'                           " file tree on the side

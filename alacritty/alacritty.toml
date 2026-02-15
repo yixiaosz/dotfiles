@@ -1,0 +1,14 @@
+[window]
+padding = { x = 10, y = 10 }
+dynamic_title = true
+opacity = 1.0
+
+[font]
+normal = { family = "tx-02", style = "Regular" }
+size = 14.0
+
+[cursor]
+style = { blinking = "On" }
+
+[shell]
+program = "/usr/bin/zsh"

@@ -1,0 +1,20 @@
+# Theme
+theme = Material Darker
+macos-icon = retro
+
+# Font settings
+font-family = "TX-02"
+font-size = 18
+
+# Window behavior
+window-theme = auto
+window-decoration = true
+confirm-close-surface = false
+window-height = 30
+window-width = 100
+
+# Mouse & interaction
+mouse-hide-while-typing = true
+
+# Cursor settings
+# cursor-style = block

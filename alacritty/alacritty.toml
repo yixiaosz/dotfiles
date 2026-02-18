@@ -1,14 +1,25 @@
+# Yixiao's Alacritty Configs
+# Maintained since 2.2026
+
+import = [
+"~/.config/alacritty/themes/moonfly-default.toml",
+]
+live_config_reload = true
+
 [window]
 padding = { x = 10, y = 10 }
 dynamic_title = true
 opacity = 1.0
+dimensions = { columns = 100, lines = 25 } # optimized for TP X220
+decorations = "Full"
 
 [font]
 normal = { family = "tx-02", style = "Regular" }
 size = 14.0
 
 [cursor]
-style = { blinking = "On" }
+style = { shape = "Block", blinking = "On" }
+
 
 [shell]
 program = "/usr/bin/zsh"

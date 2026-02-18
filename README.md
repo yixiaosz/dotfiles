@@ -5,7 +5,14 @@
 Clone the repository:
 
 ```shell
+# Clone the repo
 git clone https://github.com/yixiaosz/dotfiles.git
+
+# Check what do you need
+cd ./dotfiles && ls -a
+
+# Remove the .git folder so you can initialize your own later
+rm -rf ./.git
 ```
 
 ## Usage

@@ -1,0 +1,6 @@
+# this document stores Yixiao's custom git shorthands
+
+# 1. quickgit
+# git add all, commit, and push
+
+quickgit = "!f() { git add .; git status; echo \"Proceed? (y/n)\"; read confirm; if [ \"$confirm\" = \"y\" ]; then echo \"Enter message:\"; read msg; git commit -m \"$msg\"; git push; else echo \"Aborted\"; fi; }; f"

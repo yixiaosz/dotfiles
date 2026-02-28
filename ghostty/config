@@ -1,6 +1,7 @@
 # Theme
 theme = Material Darker
-macos-icon = retro
+macos-icon = custom
+macos-custom-icon = ~/dotfiles/ghostty/ghostty.icns
 
 # Font settings
 font-family = "TX-02"

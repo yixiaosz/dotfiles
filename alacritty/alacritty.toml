@@ -23,3 +23,8 @@ style = { shape = "Block", blinking = "On" }
 
 [shell]
 program = "/usr/bin/zsh"
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"

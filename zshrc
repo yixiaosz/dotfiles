@@ -125,3 +125,4 @@ export NVM_DIR="$HOME/.nvm"
 # Load local configurations if exists
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"

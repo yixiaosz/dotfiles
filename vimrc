@@ -28,6 +28,9 @@ set shiftwidth=4
 " Use spaces instead of tabs
 set expandtab
 
+" Vim's idle timer
+set updatetime=500
+
 " Key remap
 " (1) Quickly move cursor between Vim windows
 noremap <c-h> <c-w><c-h>
@@ -53,23 +56,21 @@ call plug#end()
     " :PlugDiff to review the changes from the last update
     " :PlugClean to remove plugins no longer in the list
 
-" Enable ALE for Python
-let g:ale_python_auto_enabled = 1
-
-" Set Ruff as the linter 
+" Set linters
 " install ruff in the venv
-let g:ale_linters = {'python':['ruff','pyright']}
+let g:ale_linters = {
+\    'python':['ruff','pyright'],
+\    'java':['javac','checkstyle'],
+\}
 
-" Set Ruff as the formatter 
-" Ruff will format the code on save
-" let g:ale_fixers = {'python':['ruff_format']}
+" Set fixers (currently turned off)
+" let g:ale_fixers = {
+" \    'python':['ruff_format'],
+" \    'java':['google_java_format'],
+" \}
 
 " ALE auto fix files on save
-let g:ale_fix_on_save = 1
-
-" Enable ALE hover
-let g:ale_hover_cursor = 1
-set updatetime=500
+" let g:ale_fix_on_save = 1
 
 " Custom ALE highlight groups
 highlight ALEError ctermbg=DarkRed guibg=DarkRed

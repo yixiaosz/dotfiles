@@ -127,5 +127,7 @@ export NVM_DIR="$HOME/.nvm"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
-# Load my preferred Python3 version
-export PATH="$(brew --prefix python@3.14)/libexec/bin:$PATH"
+# Load the brew-installed python in macOS
+if (( $+commands[brew] )); then
+    export PATH="$(brew --prefix python@3.14)/libexec/bin:$PATH"
+fi

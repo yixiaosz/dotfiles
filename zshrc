@@ -126,3 +126,6 @@ export NVM_DIR="$HOME/.nvm"
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# Load my preferred Python3 version
+export PATH="$(brew --prefix python@3.14)/libexec/bin:$PATH"

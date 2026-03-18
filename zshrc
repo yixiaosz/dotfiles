@@ -131,3 +131,18 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 if (( $+commands[brew] )); then
     export PATH="$(brew --prefix python@3.14)/libexec/bin:$PATH"
 fi
+
+# Vim + fzf shortcut
+vim() {
+    if [[ "$1" == "fzf" ]]; then
+        # run fzf and store the result
+        local file="$(fzf)"
+        # if a file's select, open it with vim
+        if [[ -n "$file" ]]; then
+            command vim "$file"
+        fi
+    else
+        # otherwise just run vim in regular way
+        command vim "$@"
+    fi
+}

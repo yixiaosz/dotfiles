@@ -52,7 +52,7 @@ ZSH_THEME="robbyrussell"
 # You can also set it to another string to have that shown instead of the default red dots.
 # e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
 # Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -82,9 +82,14 @@ setopt SHARE_HISTORY # share history between terminals
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+# Specify SSH key names
+zstyle :omz:plugins:ssh-agent identities id_x220 id_mbp2025
+
 plugins=(
     git
     zsh-autosuggestions
+    ssh-agent
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -146,3 +151,4 @@ vim() {
         command vim "$@"
     fi
 }
+

@@ -83,9 +83,6 @@ setopt SHARE_HISTORY # share history between terminals
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-# Specify SSH key names
-zstyle :omz:plugins:ssh-agent identities id_x220 id_mbp2025
-
 plugins=(
     git
     zsh-autosuggestions

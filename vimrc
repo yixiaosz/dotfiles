@@ -11,11 +11,12 @@ filetype indent on
 " Show line numbers
 set number
 
-" Show line edge
-set textwidth=80
-set colorcolumn=-2
-highlight ColorColumn ctermbg=green guibg=orange
+" Show lin char length
+set ruler
 
+" Show line edge
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.*/
 
 " Highlight search results
 set hlsearch

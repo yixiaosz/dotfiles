@@ -14,9 +14,23 @@ set number
 " Show lin char length
 set ruler
 
-" Show line edge
+" Show line edge (except markdown files)
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.*/
+
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+
+function! s:ToggleOverLength()
+    if &filetype ==# 'markdown'
+        match OverLength /none/
+    else
+        match OverLength /\%81v.*/
+    endif
+endfunction
+
+augroup ColumnLimit
+    autocmd!
+    autocmd BufEnter,WinEnter,FileType * call s:ToggleOverLength()
+augroup END
 
 " Highlight search results
 set hlsearch

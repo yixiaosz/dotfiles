@@ -11,6 +11,12 @@ filetype indent on
 " Show line numbers
 set number
 
+" Show line edge
+set textwidth=80
+set colorcolumn=-2
+highlight ColorColumn ctermbg=green guibg=orange
+
+
 " Highlight search results
 set hlsearch
 " Enable incremental search (searches as you type)

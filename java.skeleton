@@ -1,0 +1,5 @@
+public class ClassName {
+    public void main(String[] args) {
+        System.out.println("Ah! New program!");
+    }
+}

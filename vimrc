@@ -65,7 +65,7 @@ call plug#begin()
 " List your plugins here
 " Plug 'tpope/vim-sensible'
 Plug 'dense-analysis/ale'                           " async lint engine: controls lintes & fixers
-" Plug 'LunarWatcher/auto-pairs'                      " auto (parethesis) completion
+Plug 'LunarWatcher/auto-pairs'                      " auto (parethesis) completion
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " auto update fzf when PlugInstall
 Plug 'junegunn/fzf.vim'                             " fuzzy search tool
 Plug 'preservim/nerdtree'                           " file tree on the side
@@ -100,3 +100,8 @@ highlight ALEWarning ctermbg=DarkYellow guibg=DarkYellow
 " NerdTree configs
 " (1) Use <Ctrl-T> to turn on NerdTree
 noremap <C-t> :NERDTreeToggle<CR>
+
+" Skeleton file for Java programs
+autocmd BufNewFile *.java 0r ~/dotfiles/java.skeleton
+" Replace class name with the new file's name
+autocmd BufNewFile *.java %s/ClassName/\=expand('%:t:r')/g 

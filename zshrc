@@ -9,6 +9,18 @@ export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+# Path to default terminal emulator
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export TERMINAL="alacritty"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    export TERMINAL="ghostty"
+fi
+
+# Prepend hostname (red) only when connected via SSH
+if [[ -n "$SSH_CONNECTION" ]] || [[ -n "$SSH_CLIENT" ]]; then
+    PROMPT='%{$fg[red]%}%m%{$reset_color%} '$PROMPT
+fi
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME

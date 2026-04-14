@@ -4,3 +4,8 @@
 # git add all, commit, and push
 
 quickgit = "!f() { git add .; git status; echo \"Proceed? (y/n)\"; read confirm; if [ \"$confirm\" = \"y\" ]; then echo \"Enter message:\"; read msg; git commit -m \"$msg\"; git push; else echo \"Aborted\"; fi; }; f"
+
+# 2. quickgit with pull --rebase
+# I frequently forget to pull before I push, so now pull is in the workflow
+
+quickgit = "!f() { git pull --rebase; git add .; git status; echo \"Proceed? (y/n)\"; read confirm; if [ \"$confirm\" = \"y\" ]; then echo \"Enter message:\"; read msg; git commit -m \"$msg\"; git push; else echo \"Aborted\"; fi; }; f"

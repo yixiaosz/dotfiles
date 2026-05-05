@@ -25,7 +25,12 @@ fi
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    ZSH_THEME="ys"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    ZSH_THEME="robbyrussell"
+fi
+
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -162,5 +167,49 @@ vim() {
         # otherwise just run vim in regular way
         command vim "$@"
     fi
+}
+
+# Alias for adjusting sleep mode settings (for SSH)
+alias sshhost='sudo pmset -a sleep 0 hibernatemode 0 disablesleep 1 standby 0 powernap 0'
+alias sshhost-off='sudo pmset -a sleep 1 hibernatemode 3 disablesleep 0 standby 1 powernap 1'
+
+# TLP privilege fix - quick branching menu
+tlpfix() {
+    echo "TLP Fix Options:"
+    echo "  [1] Enable & start TLP services"
+    echo "  [2] Check service status & diagnostics"
+    echo "  [q] Quit"
+    echo ""
+    printf "Choose: "
+    read choice
+
+    case "$choice" in
+        1)
+            echo "→ Enabling TLP services..."
+            sudo systemctl enable tlp.service
+            echo "→ Starting TLP..."
+            sudo systemctl start tlp.service
+            sudo tlp start
+            echo "✓ Done. Run 'tlpfix' then [2] to verify."
+            ;;
+        2)
+            echo "→ TLP service status:"
+            sudo systemctl status tlp --no-pager
+            echo ""
+            echo "→ TLP diagnostics:"
+            sudo tlp-stat -s
+            echo ""
+            echo "→ Config check:"
+            sudo tlp-stat -c 2>&1 | head -20
+            ;;
+        q|Q)
+            echo "Cancelled."
+            return 0
+            ;;
+        *)
+            echo "Invalid option. Use 1, 2, or q."
+            return 1
+            ;;
+    esac
 }
 

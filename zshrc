@@ -190,6 +190,7 @@ tlpfix() {
             echo "→ Starting TLP..."
             sudo systemctl start tlp.service
             sudo tlp start
+            echo "→ Run 'sudo vim /etc/tlp.conf' to edit charging threshold."
             echo "✓ Done. Run 'tlpfix' then [2] to verify."
             ;;
         2)

@@ -174,25 +174,29 @@ vim() {
 
 # ssh-host: adjusts mac sleep mode settings (for SSH)
 ssh-host() {
-    echo "SSH Host Mode Settings - MacOS only"
-    echo "1) Enable SSH host mode (prevent sleep)"
+    echo "SSH Host Mode Settings"
+    echo "1) Enable SSH host mode (prevent sleep on AC power only)"
     echo "2) Disable SSH host mode (restore normal sleep)"
     echo "3) Check current power settings"
     echo "q) Quit"
     echo ""
     printf "Select option: "
-    read choice
+    read -r choice
 
     case "$choice" in
         1)
-            echo "Enabling SSH host mode..."
-            sudo pmset -a sleep 0 hibernatemode 0 disablesleep 1 standby 0 powernap 0
-            echo "Done. Sleep is now disabled."
+            echo "Enabling SSH host mode for AC power only..."
+            # -c = charger/AC only. Battery settings remain untouched.
+            sudo pmset -c sleep 0 hibernatemode 0 disablesleep 1 standby 0 powernap 0
+            echo "Done. Sleep is now disabled only while plugged in."
             ;;
         2)
             echo "Disabling SSH host mode..."
-            sudo pmset -a sleep 1 hibernatemode 3 disablesleep 0 standby 1 powernap 1
-            echo "Done. Normal sleep settings restored."
+            # Restore AC power settings
+            sudo pmset -c sleep 10 hibernatemode 3 disablesleep 0 standby 1 powernap 1
+            # Restore battery power settings
+            sudo pmset -b sleep 5 hibernatemode 3 disablesleep 0 standby 1 powernap 1
+            echo "Done."
             ;;
         3)
             pmset -g

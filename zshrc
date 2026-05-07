@@ -2,6 +2,9 @@
 autoload -Uz compinit
 compinit
 
+# My custom welcome text
+print "Welcome back, $USER."
+print "Custom functions: tlpfix, sshhost"
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -169,11 +172,42 @@ vim() {
     fi
 }
 
-# Alias for adjusting sleep mode settings (for SSH)
-alias sshhost='sudo pmset -a sleep 0 hibernatemode 0 disablesleep 1 standby 0 powernap 0'
-alias sshhost-off='sudo pmset -a sleep 1 hibernatemode 3 disablesleep 0 standby 1 powernap 1'
+# sshhost: adjusts mac sleep mode settings (for SSH)
+sshhost() {
+    echo "SSH Host Mode Settings"
+    echo "1) Enable SSH host mode (prevent sleep)"
+    echo "2) Disable SSH host mode (restore normal sleep)"
+    echo "3) Check current power settings"
+    echo "q) Quit"
+    echo ""
+    printf "Select option: "
+    read -r choice
 
-# TLP privilege fix - quick branching menu
+    case "$choice" in
+        1)
+            echo "Enabling SSH host mode..."
+            sudo pmset -a sleep 0 hibernatemode 0 disablesleep 1 standby 0 powernap 0
+            echo "Done. Sleep is now disabled."
+            ;;
+        2)
+            echo "Disabling SSH host mode..."
+            sudo pmset -a sleep 1 hibernatemode 3 disablesleep 0 standby 1 powernap 1
+            echo "Done. Normal sleep settings restored."
+            ;;
+        3)
+            pmset -g
+            ;;
+        q|Q|"")
+            return 0
+            ;;
+        *)
+            echo "Invalid option: $choice"
+            return 1
+            ;;
+    esac
+}
+
+# tlpfix: fixes or checks TLP running status on Linux
 tlpfix() {
     echo "TLP Fix Options:"
     echo "  [1] Enable & start TLP services"

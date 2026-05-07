@@ -192,10 +192,7 @@ ssh-host() {
             ;;
         2)
             echo "Disabling SSH host mode..."
-            # Restore AC power settings
-            sudo pmset -c sleep 10 hibernatemode 3 disablesleep 0 standby 1 powernap 1
-            # Restore battery power settings
-            sudo pmset -b sleep 5 hibernatemode 3 disablesleep 0 standby 1 powernap 1
+            sudo pmset -a sleep 1 hibernatemode 3 disablesleep 0 standby 1 powernap 1
             echo "Done."
             ;;
         3)

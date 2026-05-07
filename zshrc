@@ -174,7 +174,7 @@ vim() {
 
 # sshhost: adjusts mac sleep mode settings (for SSH)
 sshhost() {
-    echo "SSH Host Mode Settings"
+    echo "SSH Host Mode Settings - MacOS only"
     echo "1) Enable SSH host mode (prevent sleep)"
     echo "2) Disable SSH host mode (restore normal sleep)"
     echo "3) Check current power settings"
@@ -209,7 +209,7 @@ sshhost() {
 
 # tlpfix: fixes or checks TLP running status on Linux
 tlpfix() {
-    echo "TLP Fix Options:"
+    echo "TLP Fix Options - Linux only"
     echo "  [1] Enable & start TLP services"
     echo "  [2] Check service status & diagnostics"
     echo "  [q] Quit"

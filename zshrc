@@ -4,7 +4,7 @@ compinit
 
 # My custom welcome text
 print "Welcome back, $USER."
-print "Custom functions: tlpfix, sshhost"
+print "Custom functions: tlpfix, ssh-host"
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -172,8 +172,8 @@ vim() {
     fi
 }
 
-# sshhost: adjusts mac sleep mode settings (for SSH)
-sshhost() {
+# ssh-host: adjusts mac sleep mode settings (for SSH)
+ssh-host() {
     echo "SSH Host Mode Settings - MacOS only"
     echo "1) Enable SSH host mode (prevent sleep)"
     echo "2) Disable SSH host mode (restore normal sleep)"
@@ -181,7 +181,7 @@ sshhost() {
     echo "q) Quit"
     echo ""
     printf "Select option: "
-    read -r choice
+    read choice
 
     case "$choice" in
         1)

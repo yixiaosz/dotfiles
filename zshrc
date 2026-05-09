@@ -186,17 +186,24 @@ ssh-host() {
     case "$choice" in
         1)
             echo "Enabling SSH host mode for AC power only..."
-            # -c = charger/AC only. Battery settings remain untouched.
-            sudo pmset -c sleep 0 hibernatemode 0 disablesleep 1 standby 0 powernap 0
+            # AC (-c): never idle-sleep, no hibernation, no standby
+            sudo pmset -c sleep 0 hibernatemode 0 standby 0 powernap 0
+            # Battery (-b): restore normal laptop behavior (safe sleep, standby)
+            sudo pmset -b sleep 1 hibernatemode 3 standby 1 powernap 1
+            # CRITICAL: make sure the global disablesleep flag is OFF
+            sudo pmset -a disablesleep 0
             echo "Done. Sleep is now disabled only while plugged in."
             ;;
         2)
             echo "Disabling SSH host mode..."
-            sudo pmset -a sleep 1 hibernatemode 3 disablesleep 0 standby 1 powernap 1
+            # Restore defaults for both AC and battery
+            sudo pmset -c sleep 1 hibernatemode 3 standby 1 powernap 1
+            sudo pmset -b sleep 1 hibernatemode 3 standby 1 powernap 1
+            sudo pmset -a disablesleep 0
             echo "Done."
             ;;
         3)
-            pmset -g
+            pmset -g custom
             ;;
         q|Q|"")
             return 0

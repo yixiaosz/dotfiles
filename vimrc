@@ -78,7 +78,7 @@ call plug#end()
     " :PlugClean to remove plugins no longer in the list
 
 " Set linters
-" install ruff in the venv
+" Run `uv pip install ruff` to enable py linter in venv
 let g:ale_linters = {
 \    'python':['ruff','pyright'],
 \    'java':['javac','checkstyle'],
@@ -96,6 +96,9 @@ let g:ale_linters = {
 " Custom ALE highlight groups
 highlight ALEError ctermbg=DarkRed guibg=DarkRed
 highlight ALEWarning ctermbg=DarkYellow guibg=DarkYellow
+
+" let ALE to scan java packages if possible
+autocmd BufReadPost *.java let b:ale_java_javac_options = '-sourcepath ' . expand('%:p:h:h')
 
 " NerdTree configs
 " (1) Use <Ctrl-T> to turn on NerdTree

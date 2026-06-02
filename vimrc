@@ -14,6 +14,9 @@ set number
 " Show lin char length
 set ruler
 
+" Explicitly set encoding to UTF-8
+set encoding=utf-8
+
 " Show line edge (except markdown files)
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 

@@ -15,7 +15,7 @@ decorations = "Full"
 
 [font]
 normal = { family = "tx-02", style = "Regular" }
-size = 14.0
+size = 13.0
 
 [cursor]
 style = { shape = "Block", blinking = "On" }

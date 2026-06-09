@@ -19,6 +19,9 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     export TERMINAL="ghostty"
 fi
 
+# Path to Kimi Code
+export PATH="$HOME/.kimi-code/bin:$PATH"
+
 # Prepend hostname (red) only when connected via SSH
 if [[ -n "$SSH_CONNECTION" ]] || [[ -n "$SSH_CLIENT" ]]; then
     PROMPT='%{$fg[red]%}%m%{$reset_color%} '$PROMPT
@@ -255,4 +258,3 @@ tlpfix() {
             ;;
     esac
 }
-

@@ -4,7 +4,7 @@ compinit
 
 # My custom welcome text
 print "Welcome back, $USER."
-print "Custom functions: tlpfix, ssh-host"
+print "Custom functions: tlpfix, ssh-host, tmux-init"
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -257,4 +257,27 @@ tlpfix() {
             return 1
             ;;
     esac
+}
+
+# tmux-init: get tmux ready in one line
+tmux-init() {
+    local session="main"
+
+    # Attach if session already exists
+    if tmux has-session -t "$session" 2>/dev/null; then
+        tmux attach -t "$session"
+        return
+    fi
+
+    # Create new session with first window
+    tmux new-session -d -s "$session" -n homepage
+
+    # Add remaining windows
+    tmux new-window -t "$session" -n extra1
+    tmux new-window -t "$session" -n extra2
+    tmux new-window -t "$session" -n ssh
+
+    # Switch to homepage window and attach
+    tmux select-window -t "$session:1"
+    tmux attach -t "$session"
 }

@@ -111,3 +111,11 @@ noremap <C-t> :NERDTreeToggle<CR>
 autocmd BufNewFile *.java 0r ~/dotfiles/java.skeleton
 " Replace class name with the new file's name
 autocmd BufNewFile *.java %s/ClassName/\=expand('%:t:r')/g 
+
+" Bracketed paste
+if &term =~ "screen"
+    let &t_BE = "\e[?2004h"
+    let &t_BD = "\e[?2004l"
+    exec "set t_PS=\e[200~"
+    exec "set t_PE=\e[201~"
+endif

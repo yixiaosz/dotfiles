@@ -5,6 +5,7 @@ compinit
 # My custom welcome text
 print "Welcome back, $USER."
 print "Custom functions: tlpfix, ssh-host, tmux-init"
+fortune -s
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH

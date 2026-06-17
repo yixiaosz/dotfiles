@@ -5,6 +5,7 @@ compinit
 # My custom welcome text
 print "Welcome back, $USER."
 print "Custom functions: tlpfix, ssh-host, tmux-init"
+print "Terminal size: $(stty size | awk '{print $1"×"$2}')" 2>/dev/null
 fortune -s
 
 # If you come from bash you might have to change your $PATH.

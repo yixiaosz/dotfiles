@@ -273,6 +273,6 @@ tmux-init() {
     tmux new-window -t "$session" -n ssh
 
     # Switch to homepage window and attach
-    tmux select-window -t "$session:1"
+    tmux select-window -t "$session:0"
     tmux attach -t "$session"
 }

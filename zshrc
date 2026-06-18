@@ -3,9 +3,9 @@ autoload -Uz compinit
 compinit
 
 # My custom welcome text
-print "Welcome back, $USER."
-print "Custom functions: tlpfix, ssh-host, tmux-init"
-print "Terminal size: $(stty size | awk '{print $1"×"$2}')" 2>/dev/null
+print "👋 Welcome back, $USER."
+print "🖥️ Terminal size: $(stty size | awk '{print $1"×"$2}')" 2>/dev/null
+print "🔧 Custom functions: tlpfix, ssh-host, tmux-init, fzfvim"
 fortune -s
 
 # If you come from bash you might have to change your $PATH.
@@ -163,17 +163,10 @@ if (( $+commands[brew] )); then
 fi
 
 # Vim + fzf shortcut
-vim() {
-    if [[ "$1" == "fzf" ]]; then
-        # run fzf and store the result
-        local file="$(fzf)"
-        # if a file's select, open it with vim
-        if [[ -n "$file" ]]; then
-            command vim "$file"
-        fi
-    else
-        # otherwise just run vim in regular way
-        command vim "$@"
+fzfvim() {
+    local file="$(fzf)"
+    if [[ -n "$file" ]]; then
+        command vim "$file"
     fi
 }
 

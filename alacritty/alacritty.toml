@@ -2,7 +2,7 @@
 # Maintained since 2.2026
 
 import = [
-"~/.config/alacritty/themes/moonfly-default.toml",
+"~/.config/alacritty/themes/everforest_light_medium.toml",
 ]
 live_config_reload = true
 

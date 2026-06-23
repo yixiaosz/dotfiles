@@ -112,9 +112,9 @@ setopt SHARE_HISTORY # share history between terminals
 zstyle :omz:plugins:ssh-agent identities id_ed25519
 
 plugins=(
-    git
     zsh-autosuggestions
     ssh-agent
+    colored-man-pages
 )
 
 source $ZSH/oh-my-zsh.sh

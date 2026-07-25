@@ -15,3 +15,10 @@
 *.swp
 __pycache__/
 *.pyc
+tt.*
+.tests
+doc/tags
+debug
+.repro
+foo.*
+data

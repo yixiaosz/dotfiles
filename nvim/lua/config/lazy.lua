@@ -1,3 +1,9 @@
+-- NOTE: lazy-lock.json is synced across machines via git.
+-- Run `:Lazy update` on your primary machine only, then commit + push
+-- the lockfile. On all other machines, run `:Lazy restore` after pulling
+-- to check out the exact pinned commits. Never `:Lazy update` on more
+-- than one machine, or the lockfile will ping-pong.
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"

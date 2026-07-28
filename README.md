@@ -15,6 +15,24 @@ cd ./dotfiles && ls -a
 rm -rf ./.git
 ```
 
+## Prerequisites
+
+On a vanilla Ubuntu setup, install zsh and oh-my-zsh before using the `zshrc`.
+
+```shell
+# Install zsh
+sudo apt update && sudo apt install -y zsh
+
+# Install oh-my-zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+If the installer did not switch your default shell, do it manually, then log out and back in for the change to take effect.
+
+```shell
+chsh -s $(which zsh)
+```
+
 ## Usage
 
 Configuration files in this repository are stored without the leading dot (`.`) to prevent accidental loading. To use a specific configuration, either copy it to your home directory or create a symbolic link.
@@ -62,4 +80,54 @@ git config core.excludesfile
 
 ## Oh-my-zsh 
 
-My zsh uses oh-my-zsh to manage my plugins. Make sure you check out the `plugin=()` section in the `zshrc` and install the included plugins. 
+My zsh uses oh-my-zsh to manage my plugins. Make sure you check out the `plugins=()` section in the `zshrc` and install the included plugins. 
+
+Built-in plugins such as `ssh-agent` and `colored-man-pages` ship with oh-my-zsh, but custom plugins must be cloned manually since there is no plugin manager. Currently the only custom plugin is `zsh-autosuggestions`:
+
+```shell
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+```
+
+## Alacritty
+
+The config lives in `alacritty/alacritty.toml` and imports a theme from the `alacritty/themes/` directory, so both need to be in place.
+
+```shell
+mkdir -p ~/.config/alacritty
+ln -s ~/dotfiles/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+ln -s ~/dotfiles/alacritty/themes ~/.config/alacritty/themes
+```
+
+To switch themes, edit the `import` line at the top of `alacritty.toml`. Changes apply immediately thanks to `live_config_reload`.
+
+> **Note:** The font is set to `TX-02` and the shell to `/usr/bin/zsh` — adjust these if your setup differs.
+
+## Ghostty
+
+Link `ghostty/config` to Ghostty's config location.
+
+```shell
+mkdir -p ~/.config/ghostty
+ln -s ~/dotfiles/ghostty/config ~/.config/ghostty/config
+```
+
+> **Note:** The custom macOS icon is referenced by absolute path (`~/dotfiles/ghostty/ghostty-pink.icns`), so this assumes the repo is cloned to `~/dotfiles`.
+
+## Neovim
+
+The Neovim setup is a LazyVim config with custom functions migrated from `vimrc`. Link the whole `nvim` directory.
+
+```shell
+ln -s ~/dotfiles/nvim ~/.config/nvim
+```
+
+On first launch, lazy.nvim will install all plugins pinned in `lazy-lock.json`.
+
+### Syncing Neovim plugins across machines
+
+Plugin versions are pinned in `nvim/lazy-lock.json`, which is tracked in this repo. To keep machines in sync:
+
+- Run `:Lazy update` on your **primary machine only**, then commit and push the updated lockfile.
+- On all other machines, pull and run `:Lazy restore` to check out the exact pinned commits.
+
+Avoid running `:Lazy update` on more than one machine, or the lockfile will ping-pong between commits.

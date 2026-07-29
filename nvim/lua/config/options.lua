@@ -15,3 +15,6 @@ vim.g.autoformat = false
 
 -- Blinking cursor
 vim.opt.guicursor:append("a:blinkon500-blinkoff500")
+
+-- Light background (everforest light variant)
+vim.opt.background = "light"

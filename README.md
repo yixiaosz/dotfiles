@@ -1,5 +1,20 @@
 # Yixiao's Dotfiles
 
+## Quick setup on a fresh Ubuntu server
+
+`setup_ubuntu.sh` bootstraps the whole CLI environment in one go: it updates apt, installs base packages (zsh, vim, git, tmux, btop, etc.), sets up Oh My Zsh + zsh-autosuggestions, installs uv / kimi-code / Neovim via their official installers, symlinks the dotfiles (`zshrc`, `tmux.conf`, `vimrc`, `nvim/`) into place, runs a headless `:Lazy restore`, and switches the login shell to zsh. It prints a plan and asks for confirmation before making any changes.
+
+```shell
+# Clone the repo to ~/dotfiles (the script expects this exact path)
+git clone https://github.com/yixiaosz/dotfiles.git ~/dotfiles
+
+# Make the script executable and run it with bash
+chmod +x ~/dotfiles/setup_ubuntu.sh
+bash ~/dotfiles/setup_ubuntu.sh
+```
+
+Log out and back in afterwards for the shell change to take effect. The script is safe to re-run — steps that are already done are skipped.
+
 ## Installation
 
 Clone the repository:

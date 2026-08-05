@@ -22,3 +22,4 @@ debug
 .repro
 foo.*
 data
+.ipynb_checkpoints/

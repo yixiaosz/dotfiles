@@ -2,7 +2,7 @@
 # Client preferences for kimi-code.
 # Agent/runtime settings stay in ~/.kimi-code/config.toml.
 
-theme = "auto" # "auto" | "dark" | "light"
+theme = "dark" # "auto" | "dark" | "light"
 
 [editor]
 command = "vim" # Empty uses $VISUAL / $EDITOR

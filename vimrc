@@ -2,6 +2,9 @@
 
 " Dependencies: ALE, ruff, pyright
 
+" Useful commands:
+" :retab replaces existing tab characters with spaces
+
 " Activates syntax highlighting
 syntax on
 

@@ -1,6 +1,6 @@
 # Theme
-# theme = Material Darker
-theme = Flexoki Light
+theme = Material Darker
+# theme = Flexoki Light
 macos-icon = custom
 macos-custom-icon = ~/dotfiles/ghostty/ghostty-pink.icns
 

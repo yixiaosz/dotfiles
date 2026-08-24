@@ -24,6 +24,9 @@ fi
 # Path to Kimi Code
 export PATH="$HOME/.kimi-code/bin:$PATH"
 
+# Path to opencode
+export PATH="$HOME/.opencode/bin:$PATH"
+
 # Prepend hostname (red) only when connected via SSH
 if [[ -n "$SSH_CONNECTION" ]] || [[ -n "$SSH_CLIENT" ]]; then
     PROMPT='%{$fg[red]%}%m%{$reset_color%} '$PROMPT

@@ -8,7 +8,7 @@
 #   1. apt update && apt upgrade
 #   2. apt install a base set of packages (extend APT_PACKAGES below)
 #   3. Install Oh My Zsh + zsh-autosuggestions plugin
-#   4. Install uv, kimi-code, and Neovim
+#   4. Install uv, opencode, and Neovim
 #   5. Symlink dotfiles from ~/dotfiles into $HOME / ~/.config
 #   6. Install vim-plug and run headless `PlugInstall` for vimrc plugins
 #   7. Headless `Lazy restore` to install Neovim plugins from lazy-lock.json
@@ -70,7 +70,7 @@ This script will set up a fresh Ubuntu server with your CLI environment:
   2. apt install: ${APT_PACKAGES[*]}
   3. Install Oh My Zsh + zsh-autosuggestions plugin
   4. Install uv
-  5. Install kimi-code
+  5. Install opencode
   6. Install Neovim
   7. Symlink dotfiles from $DOTFILES_DIR:
        zshrc     -> ~/.zshrc
@@ -136,11 +136,19 @@ else
 fi
 
 # --- 5. kimi-code -----------------------------------------------------------
-if command -v kimi >/dev/null 2>&1 || [ -x "$HOME/.kimi-code/bin/kimi" ]; then
-    warn "kimi-code already installed"
+# if command -v kimi >/dev/null 2>&1 || [ -x "$HOME/.kimi-code/bin/kimi" ]; then
+#     warn "kimi-code already installed"
+# else
+#     log "Installing kimi-code"
+#     curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
+# fi
+
+# --- 5b. opencode -----------------------------------------------------------
+if command -v opencode >/dev/null 2>&1 || [ -x "$HOME/.opencode/bin/opencode" ]; then
+    warn "opencode already installed"
 else
-    log "Installing kimi-code"
-    curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash
+    log "Installing opencode"
+    curl -fsSL https://opencode.ai/install | bash
 fi
 
 # --- 6. Neovim
@@ -206,4 +214,4 @@ else
 fi
 
 log "Done! Log out and back in (or run 'exec zsh') to start using your new environment."
-echo "Note: '$HOME/.local/bin' and '$HOME/.kimi-code/bin' are on PATH via your zshrc."
+echo "Note: '$HOME/.local/bin' and '$HOME/.opencode/bin' are on PATH via your zshrc."

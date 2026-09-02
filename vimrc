@@ -75,6 +75,7 @@ Plug 'LunarWatcher/auto-pairs'                      " auto (parethesis) completi
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " auto update fzf when PlugInstall
 Plug 'junegunn/fzf.vim'                             " fuzzy search tool
 Plug 'preservim/nerdtree'                           " file tree on the side
+Plug 'PontusHanssen/pddl.vim'                       " colorize .pddl files
 
 call plug#end()
 " Vim-plug commands (run in vim)

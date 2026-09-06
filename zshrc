@@ -39,7 +39,7 @@ fi
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     ZSH_THEME="ys"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-    ZSH_THEME="robbyrussell"
+    ZSH_THEME="ys" #"robbyrussell"
 fi
 
 

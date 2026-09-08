@@ -1,8 +1,6 @@
 # Theme
 theme = Material Darker
 # theme = Flexoki Light
-macos-icon = custom
-macos-custom-icon = ~/dotfiles/ghostty/ghostty-pink.icns
 
 # Font settings
 font-family = "TX-02"
@@ -19,6 +17,16 @@ window-padding-y = 10
 
 # Mouse & interaction
 mouse-hide-while-typing = true
+mouse-scroll-multiplier = 1
 
 # Cursor settings
 # cursor-style = block
+
+# Platform-specific overrides.
+# Ghostty loads ALL of these and silently ignores ones that don't exist (the
+# "?" prefix). It does NOT detect the OS, so each machine must manually provide
+# its own platform file next to this one (e.g. via a symlink into this repo):
+#   Linux: config.linux   (font-size 14 + tmux auto-attach command)
+#   macOS: config.macos   (font-size 18)
+config-file = ?config.linux
+config-file = ?config.macos

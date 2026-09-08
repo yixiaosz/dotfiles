@@ -1,0 +1,3 @@
+# Linux-specific overrides
+font-size = 14
+command = /home/yixiao-rog/dotfiles/bin/tmux-attach.sh

@@ -22,11 +22,9 @@ mouse-scroll-multiplier = 1
 # Cursor settings
 # cursor-style = block
 
-# Platform-specific overrides.
-# Ghostty loads ALL of these and silently ignores ones that don't exist (the
-# "?" prefix). It does NOT detect the OS, so each machine must manually provide
-# its own platform file next to this one (e.g. via a symlink into this repo):
-#   Linux: config.linux   (font-size 14 + tmux auto-attach command)
-#   macOS: config.macos   (font-size 18)
+# Platform-specific overrides
+# Make sure that ~/.config/ghostty has 1) config 2) config.[OS]
+# config.linux: font-size 14, tmux auto-attach command
+# config.macos: font-size 18, custom ghostty icon
 config-file = ?config.linux
 config-file = ?config.macos

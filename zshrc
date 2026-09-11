@@ -42,6 +42,10 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     ZSH_THEME="ys" #"robbyrussell"
 fi
 
+# path to bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load

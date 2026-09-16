@@ -71,7 +71,10 @@ Link `vimrc` to your home directory as `.vimrc`. This allows updates in the repo
 ln -s ~/dotfiles/vimrc ~/.vimrc
 ```
 
-## Set the global gitignore file
+## More Details
+
+<details>
+<summary><h3>Global gitignore</h3></summary>
 
 Link `gitignore_global` into your home directory, then configure Git to use it.
 
@@ -87,7 +90,7 @@ You can also add it manually by editing the `.gitconfig` file.
     excludesfile = ~/.gitignore_global
 ``` 
 
-### Verify the git configuration
+#### Verify the git configuration
 
 If you see the path to the `.gitignore_global` file, such as `Users/[username]/.gitignore_global`, it's successfully configured. 
 
@@ -95,7 +98,10 @@ If you see the path to the `.gitignore_global` file, such as `Users/[username]/.
 git config core.excludesfile
 ```
 
-## Oh-my-zsh 
+</details>
+
+<details>
+<summary><h3>Oh-my-zsh</h3></summary>
 
 I use oh-my-zsh to manage my zsh plugins. Make sure you check out the `plugins=()` section in the `zshrc` and install the included plugins. 
 
@@ -108,7 +114,10 @@ I use the following custom plugin(s):
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 ```
 
-## Alacritty
+</details>
+
+<details>
+<summary><h3>Alacritty</h3></summary>
 
 The config lives in `alacritty/alacritty.toml` and imports a theme from the `alacritty/themes/` directory, so both need to be in place.
 
@@ -122,7 +131,10 @@ To switch themes, edit the `import` line at the top of `alacritty.toml`. Changes
 
 > **Note:** The font is set to `TX-02` and the shell to `/usr/bin/zsh` — adjust these if your setup differs.
 
-## Ghostty
+</details>
+
+<details>
+<summary><h3>Ghostty</h3></summary>
 
 Link the base config and the override for your operating system to Ghostty's config location. Link only one platform-specific override.
 
@@ -139,7 +151,10 @@ ln -s ~/dotfiles/ghostty/config.macos ~/.config/ghostty/config.macos
 
 > **Note:** I made the `config.linux` automatically attaches Ghostty to the `main` tmux session, identical session window setup as the `tmux-init` function in `zshrc` does.
 
-## Fontconfig
+</details>
+
+<details>
+<summary><h3>Fontconfig</h3></summary>
 
 I use en_US locale but also need to work with Simplified Chinese characters. This `fontconfig/fonts.conf` keeps the English fonts as the default while prioritizing Simplified Chinese Noto CJK fonts over Japanese variants for CJK fallback.
 
@@ -158,7 +173,10 @@ Clear font cache
 fc-cache -f
 ```
 
-## Neovim
+</details>
+
+<details>
+<summary><h3>Neovim</h3></summary>
 
 The Neovim setup is a LazyVim config with custom functions migrated from `vimrc`. Link the whole `nvim` directory.
 
@@ -168,7 +186,7 @@ ln -s ~/dotfiles/nvim ~/.config/nvim
 
 On first launch, lazy.nvim will install all plugins pinned in `lazy-lock.json`.
 
-### Syncing Neovim plugins across machines
+#### Syncing Neovim plugins across machines
 
 Plugin versions are pinned in `nvim/lazy-lock.json`, which is tracked in this repo. To keep machines in sync:
 
@@ -176,3 +194,5 @@ Plugin versions are pinned in `nvim/lazy-lock.json`, which is tracked in this re
 - On all other machines, pull and run `:Lazy restore` to check out the exact pinned commits.
 
 > **Note:** Avoid running `:Lazy update` on more than one machine, or the lockfile will ping-pong between commits.
+
+</details>

@@ -2,7 +2,7 @@
 
 ## Quick setup on a fresh Ubuntu server
 
-`setup_ubuntu.sh` bootstraps the whole CLI environment in one go: it updates apt, installs base packages (zsh, vim, git, tmux, btop, etc.), sets up Oh My Zsh + zsh-autosuggestions, installs uv / kimi-code / Neovim via their official installers, symlinks the dotfiles (`zshrc`, `tmux.conf`, `vimrc`, `nvim/`) into place, runs a headless `:Lazy restore`, and switches the login shell to zsh. It prints a plan and asks for confirmation before making any changes.
+I made this `setup_ubuntu.sh` script to bootstrap the whole CLI environment in one go: it updates apt, installs base packages (zsh, vim, git, tmux, btop, etc.), sets up Oh My Zsh + zsh-autosuggestions, installs uv / OpenCode / Neovim via their official installers, symlinks the dotfiles (`zshrc`, `tmux.conf`, `vimrc`, `nvim/`) into place, runs a headless `:Lazy restore`, and switches the login shell to zsh. It prints a plan and asks for confirmation before making any changes.
 
 ```shell
 # Clone the repo to ~/dotfiles (the script expects this exact path)
@@ -26,7 +26,7 @@ git clone https://github.com/yixiaosz/dotfiles.git
 # Check what do you need
 cd ./dotfiles && ls -a
 
-# Remove the .git folder so you can initialize your own later
+# (optional) Remove the .git folder so you can initialize your own later
 rm -rf ./.git
 ```
 
@@ -64,6 +64,7 @@ cp -i ~/dotfiles/vimrc ~/.vimrc
 ### Option B: Create a symbolic link
 
 Link `vimrc` to your home directory as `.vimrc`. This allows updates in the repository to be reflected immediately.
+
 > **Note:** Ensure no file currently exists at the destination before linking.
 
 ```shell
@@ -72,9 +73,10 @@ ln -s ~/dotfiles/vimrc ~/.vimrc
 
 ## Set the global gitignore file
 
-Use the `git config` command to point to the `git_global` file.
+Link `gitignore_global` into your home directory, then configure Git to use it.
 
 ```shell
+ln -s ~/dotfiles/gitignore_global ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global
 ```
 
@@ -95,9 +97,12 @@ git config core.excludesfile
 
 ## Oh-my-zsh 
 
-My zsh uses oh-my-zsh to manage my plugins. Make sure you check out the `plugins=()` section in the `zshrc` and install the included plugins. 
+I use oh-my-zsh to manage my zsh plugins. Make sure you check out the `plugins=()` section in the `zshrc` and install the included plugins. 
 
-Built-in plugins such as `ssh-agent` and `colored-man-pages` ship with oh-my-zsh, but custom plugins must be cloned manually since there is no plugin manager. Currently the only custom plugin is `zsh-autosuggestions`:
+Built-in plugins such as `ssh-agent` and `colored-man-pages` ship with oh-my-zsh, but custom plugins must be cloned manually since there is no plugin manager. 
+
+I use the following custom plugin(s):
+- `zsh-autosuggestions` (highly recommended)
 
 ```shell
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -119,22 +124,37 @@ To switch themes, edit the `import` line at the top of `alacritty.toml`. Changes
 
 ## Ghostty
 
-Link `ghostty/config` to Ghostty's config location.
+Link the base config and the override for your operating system to Ghostty's config location. Link only one platform-specific override.
 
 ```shell
 mkdir -p ~/.config/ghostty
 ln -s ~/dotfiles/ghostty/config ~/.config/ghostty/config
+
+# Linux override
+ln -s ~/dotfiles/ghostty/config.linux ~/.config/ghostty/config.linux
+
+# macOS override
+ln -s ~/dotfiles/ghostty/config.macos ~/.config/ghostty/config.macos
 ```
 
-> **Note:** The custom macOS icon is referenced by absolute path (`~/dotfiles/ghostty/ghostty-pink.icns`), so this assumes the repo is cloned to `~/dotfiles`.
+> **Note:** I made the `config.linux` automatically attaches Ghostty to the `main` tmux session, identical session window setup as the `tmux-init` function in `zshrc` does.
 
 ## Fontconfig
 
-`fontconfig/fonts.conf` keeps the English fonts as the default while prioritizing Simplified Chinese Noto CJK fonts over Japanese variants for CJK fallback.
+I use en_US locale but also need to work with Simplified Chinese characters. This `fontconfig/fonts.conf` keeps the English fonts as the default while prioritizing Simplified Chinese Noto CJK fonts over Japanese variants for CJK fallback.
+
+Add "Chinese(simplfied)" at `Settings/System/Region & Language/Manage Installed Languages/Install / Remove Languages...` or just install Noto CJK via apt.
+```shell
+sudo apt install fonts-noto-cjk
+```
 
 ```shell
 mkdir -p ~/.config/fontconfig
 ln -s ~/dotfiles/fontconfig/fonts.conf ~/.config/fontconfig/fonts.conf
+```
+
+Clear font cache
+```shell
 fc-cache -f
 ```
 
@@ -155,4 +175,4 @@ Plugin versions are pinned in `nvim/lazy-lock.json`, which is tracked in this re
 - Run `:Lazy update` on your **primary machine only**, then commit and push the updated lockfile.
 - On all other machines, pull and run `:Lazy restore` to check out the exact pinned commits.
 
-Avoid running `:Lazy update` on more than one machine, or the lockfile will ping-pong between commits.
+> **Note:** Avoid running `:Lazy update` on more than one machine, or the lockfile will ping-pong between commits.

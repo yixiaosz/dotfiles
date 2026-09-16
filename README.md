@@ -128,6 +128,16 @@ ln -s ~/dotfiles/ghostty/config ~/.config/ghostty/config
 
 > **Note:** The custom macOS icon is referenced by absolute path (`~/dotfiles/ghostty/ghostty-pink.icns`), so this assumes the repo is cloned to `~/dotfiles`.
 
+## Fontconfig
+
+`fontconfig/fonts.conf` keeps the English fonts as the default while prioritizing Simplified Chinese Noto CJK fonts over Japanese variants for CJK fallback.
+
+```shell
+mkdir -p ~/.config/fontconfig
+ln -s ~/dotfiles/fontconfig/fonts.conf ~/.config/fontconfig/fonts.conf
+fc-cache -f
+```
+
 ## Neovim
 
 The Neovim setup is a LazyVim config with custom functions migrated from `vimrc`. Link the whole `nvim` directory.

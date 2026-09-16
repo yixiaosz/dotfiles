@@ -71,7 +71,7 @@ Link `vimrc` to your home directory as `.vimrc`. This allows updates in the repo
 ln -s ~/dotfiles/vimrc ~/.vimrc
 ```
 
-## More Details
+## More details
 
 <details>
 <summary><h3>Global gitignore</h3></summary>
@@ -99,7 +99,6 @@ git config core.excludesfile
 ```
 
 </details>
-
 <details>
 <summary><h3>Oh-my-zsh</h3></summary>
 
@@ -115,7 +114,6 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 ```
 
 </details>
-
 <details>
 <summary><h3>Alacritty</h3></summary>
 
@@ -132,7 +130,6 @@ To switch themes, edit the `import` line at the top of `alacritty.toml`. Changes
 > **Note:** The font is set to `TX-02` and the shell to `/usr/bin/zsh` — adjust these if your setup differs.
 
 </details>
-
 <details>
 <summary><h3>Ghostty</h3></summary>
 
@@ -152,7 +149,6 @@ ln -s ~/dotfiles/ghostty/config.macos ~/.config/ghostty/config.macos
 > **Note:** I made the `config.linux` automatically attaches Ghostty to the `main` tmux session, identical session window setup as the `tmux-init` function in `zshrc` does.
 
 </details>
-
 <details>
 <summary><h3>Fontconfig</h3></summary>
 
@@ -174,7 +170,6 @@ fc-cache -f
 ```
 
 </details>
-
 <details>
 <summary><h3>Neovim</h3></summary>
 

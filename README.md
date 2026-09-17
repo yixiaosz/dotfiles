@@ -191,3 +191,17 @@ Plugin versions are pinned in `nvim/lazy-lock.json`, which is tracked in this re
 > **Note:** Avoid running `:Lazy update` on more than one machine, or the lockfile will ping-pong between commits.
 
 </details>
+<details>
+<summary><h3>Agentic skills</h3></summary>
+
+Skills are stored in `skills/<name>/SKILL.md`. To make them work in, for example, opencode, I like to sym link the whole `skills/` dir to opencode's config, so new skills appear automatically.
+
+```shell
+ln -s ~/dotfiles/skills ~/.config/opencode/skills
+```
+
+Included skills:
+
+- `system-health-check` — I use this skill to conduct read-only health check and log-spam scan for Ubuntu/Debian systemd machines. It detects available tooling and hardware, ranks findings by severity, and writes a dated report for later reference.
+
+</details>

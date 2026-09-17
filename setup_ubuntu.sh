@@ -77,6 +77,7 @@ This script will set up a fresh Ubuntu server with your CLI environment:
        tmux.conf -> ~/.tmux.conf
        vimrc     -> ~/.vimrc
        nvim/     -> ~/.config/nvim
+       skills/   -> ~/.config/opencode/skills
      (existing files are backed up to *.bak)
   8. Install vim-plug
   9. Resotre lazyvim plugins from lazy-lock.json
@@ -188,6 +189,8 @@ link_dotfile "$DOTFILES_DIR/tmux.conf" "$HOME/.tmux.conf"
 link_dotfile "$DOTFILES_DIR/vimrc"     "$HOME/.vimrc"
 mkdir -p "$HOME/.config"
 link_dotfile "$DOTFILES_DIR/nvim"      "$HOME/.config/nvim"
+mkdir -p "$HOME/.config/opencode"
+link_dotfile "$DOTFILES_DIR/skills"    "$HOME/.config/opencode/skills"
 
 # --- 8. vim-plug + PlugInstall --------------------------------------
 if [ -f "$HOME/.vim/autoload/plug.vim" ]; then

@@ -203,5 +203,6 @@ ln -s ~/dotfiles/skills ~/.config/opencode/skills
 Included skills:
 
 - `system-health-check` — I use this skill to conduct read-only health check and log-spam scan for Ubuntu/Debian systemd machines. It detects available tooling and hardware, ranks findings by severity, and writes a dated report for later reference.
+- `opencode-session-cleanup` — I use this skill to list, filter, and delete old OpenCode sessions stored in `opencode.db`, then checkpoint and VACUUM to reclaim disk space. It also sweeps orphaned `tool-output/`, `session_diff/`, and log leftovers under `~/.local/share/opencode`.
 
 </details>

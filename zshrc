@@ -249,6 +249,7 @@ tlpfix() {
             echo ""
             echo "→ Config check:"
             sudo tlp-stat -c 2>&1 | head -20
+            sudo tlp-stat -b
             ;;
         q|Q)
             echo "Cancelled."

@@ -2,3 +2,5 @@
 font-size = 18
 macos-icon = custom
 macos-custom-icon = ~/dotfiles/ghostty/ghostty-pink.icns
+background-opacity = 0.9
+background-blur = true

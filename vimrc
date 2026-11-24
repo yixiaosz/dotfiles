@@ -26,7 +26,7 @@ highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 
 function! s:ToggleOverLength()
-    if &filetype ==# 'markdown'
+    if &filetype ==# 'markdown' || &filetype ==# 'html'
         match OverLength /none/
     else
         match OverLength /\%81v.*/

@@ -27,6 +27,23 @@ entry to the maintenance log.
   privileged checks and print the exact commands for the user to run manually.
 - **Report noise separately.** GUI/GTK/desktop log spam with no functional
   impact is "log noise", not a fault. Do not present it as a problem.
+- **Trend-aware.** Numbers are compared against the previous log entry;
+  regressions, not absolute values, drive severity.
+
+## Step 0.5 - Prior baseline (read before running checks)
+
+```sh
+ls -t ~/Documents/OS-maintenance/*.txt 2>/dev/null | head -3
+```
+
+Read those entries (most recent first, up to 3) before running any check.
+From them: (a) learn the entry format and reuse it when drafting; (b) note
+carried/recurring WARNs and previous actions; (c) note numeric baselines
+(SMART counters, battery health, disk %, recurring error counts) so this
+run's numbers can be compared. Flag any regressed metric as WARN/CRIT per
+the rubric. If no entries exist (first run on this device), use
+`template.txt` in this skill's directory as the entry format and write
+"no baseline - first run" in the entry.
 
 ## Step 0 - Preflight (capability detection)
 
@@ -212,6 +229,24 @@ apt-mark showhold 2>/dev/null
 systemctl list-timers --all --no-pager 2>/dev/null | head -20
 ```
 
+## Findings diagnosis (before drafting the log entry)
+
+For each WARN/CRIT: first check it against `benign.txt` if present - a match
+demotes it to NOISE. Then classify by history:
+
+- **Recurring** (appears in any of the last 3 entries): report "present
+  since <date>, previous action was <X>, status now <Y>" and carry the
+  previous action forward - unless the condition worsened, in which case
+  treat it as new.
+- **New**: investigate before reporting. Identify the affected component
+  (unit/device/package) and its role, pull log context (first/last
+  occurrence, `journalctl -u <unit>`), state the likely root cause and
+  impact if ignored, and give concrete copy-pasteable remediation with a
+  "watch vs act now" recommendation.
+
+Complete this diagnosis before offering to write the log; the report's and
+entry's Cause/Action lines come from it.
+
 ## Severity rubric
 
 - **CRIT** - functional impact, data risk, or security exposure (failed units,
@@ -234,6 +269,8 @@ Host: <hostname> (<distro>, uptime, form factor)
 
 ## Findings (ranked)
 1. [SEVERITY] <source> - <count> events, first <ts> / last <ts>
+   History: <recurring since <date> / new>
+   Trend: <regressed / stable / improved, key numbers>
    Cause: <root cause>
    Action: <recommended action or "none - noise">
 
@@ -248,8 +285,10 @@ Host: <hostname> (<distro>, uptime, form factor)
 
 - Directory: `~/Documents/OS-maintenance/` (create with `mkdir -p` if missing).
 - File: `<YYYY-MM-DD>.txt` from `date +%Y-%m-%d`.
-- Content: a **brief** plain-text entry - Findings, Cause, Action. Same format
-  as historical entries.
+- Content: a **brief** plain-text entry - Findings, Cause, Action. Replicate
+  the structure of the most recent historical entry exactly (header, section
+  names, wrapping); when no entries exist, use `template.txt` in this
+  skill's directory.
 - **Write only after the user confirms.** If the file already exists, append.
 - Show the drafted entry before writing.
 

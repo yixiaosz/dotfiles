@@ -1,0 +1,32 @@
+System log maintenance - <YYYY-MM-DD>
+Host: <hostname> (<distro>, kernel <running-kernel>)
+Monitoring window: last <N> days
+
+FINDINGS
+- Host running normally: <failed units / OOM / dpkg audit / holds status>.
+  Root <pct>% (<used>/<total>), inodes <pct>%, journal <size>, thermals
+  <range>C. <RAM/swap summary>.
+- WARN [<carried since <date>> if recurring]: <finding with current
+  numbers, and deltas vs the previous entry where useful, e.g.
+  "+18h power-on, wear normalized 94/100 (raw 105) unchanged from
+  <date>">.
+- INFO: <noteworthy harmless items>.
+- SSD <dev> SMART <PASSED/FAILED> at <temp>C. <counters, deltas vs
+  previous entry>. <verdict line>.
+- Battery health <pct>% (<full>/<design> Wh), charge <pct>%;
+  "<status>" <explanation vs thresholds>.
+- NOISE: <volume> from <unit> in <N> days, dominated by <source> -
+  <covered by benign filters / candidates: ...>.
+- <If no sudo:> Privileged results (<which>) supplied by the user from
+  terminal output.
+
+CAUSE
+- <one or two sentences tying findings together; end with "No disk,
+  memory, or hardware fault found." when applicable>
+
+ACTION
+- <one line per actionable finding, copy-pasteable command in backticks
+  where applicable>
+- <carried actions restated, e.g. pending firewall decision>
+- Continue monitoring SSD counters and battery capacity.
+- No remediation performed during this check.

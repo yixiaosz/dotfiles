@@ -12,143 +12,140 @@ severity, and optionally writes a dated entry to the maintenance log.
 ## Principles
 
 - **Read-only by default.** Never remediate, install, purge, or edit anything
-  unless the user explicitly asks. Diagnose, then propose.
-- **Capability-gated.** Laptop and desktop share one skill; detect hardware and
-  tools first and skip what is absent.
+  unless the user explicitly asks. Diagnose, then propose. Remove temporary log
+  captures after parsing; maintenance-log writes still require confirmation.
+- **Capability-gated.** Laptop and desktop share one skill; detect optional tools
+  and hardware first and skip what is absent.
 - **Be defensive.** Any command may be missing or require privileges. Guard with
   `command -v`, handle failures, and record what was skipped and why.
-- **Always use `/usr/bin/log`.** `log` is a zsh builtin on this platform; the
-  bare name fails or resolves incorrectly. Invoke `/usr/bin/log` explicitly.
-- **Bound every log query.** `log show` is not `journalctl`. An unbounded or
-  multi-day query can take minutes and time out. Default window is **1 hour**,
-  always pass `--last` and a `--predicate`, and use `--style ndjson` for parsing.
+- **Always use `/usr/bin/log`.** `log` is a zsh builtin on this platform; invoke
+  `/usr/bin/log` explicitly.
+- **Bound every log query.** The default detailed window is **1 hour**. Always
+  pass `--last` and a `--predicate`, and use `--style ndjson` for parsing. Scan
+  older history only when necessary to establish an identified finding's onset
+  or duration, or when the user explicitly confirms. Older scans must use narrow
+  process/subsystem/message predicates and return aggregates or small samples.
 - **Stable parsing.** Prefix data-parsing commands with `LC_ALL=C`.
-- **One privileged attempt.** Try `sudo -n` once; this environment has no TTY, so
-  an interactive password prompt cannot be answered. If it fails, skip the
-  privileged checks and print the exact commands for the user to run manually.
-- **Report noise separately.** High-volume log chatter with no functional impact
-  is "log noise", not a fault. Do not present it as a problem.
-- **System updates are out of scope.** This skill does not check OS or package
-  updates. Say so under FINDINGS; do not run `softwareupdate`/`brew outdated`.
+- **One privileged workflow.** Probe `sudo -n` once during preflight. If it
+  fails, never repeat probes that add noise to the authentication log. If it
+  succeeds, run the consolidated checks noninteractively without retrying
+  failures.
+- **Triage before deep-diving.** Run one compact core snapshot, then investigate
+  only new, worsened, carried, or user-requested findings.
+- **Report noise separately.** Classify chatter as NOISE only when it is
+  transient or explained and has no functional impact. A sustained, concentrated
+  retry loop remains WARN even when the Mac feels normal.
+- **System updates are out of scope.** Do not run `softwareupdate` or
+  `brew outdated`; state this once under FINDINGS.
+
+## Step 0.5 - Prior baseline (read before running checks)
+
+```sh
+ls -1 ~/Documents/OS-maintenance/*.txt 2>/dev/null | sort -r | head -1
+```
+
+Read the latest dated entry. Consult older entries only when a carried finding
+needs its original context. Carry forward open actions and compare relevant
+metrics, evaluating material trends alongside absolute thresholds. If no entries
+exist, use `template.txt` in this skill's directory and include
+`INFO: no baseline - first run` under FINDINGS.
 
 ## Step 0 - Preflight (capability detection)
 
-Gather context and decide which bundles apply:
-
 ```sh
-date; hostname; sw_vers; uname -m; uname -r; uptime; id -u
+date; hostname; sw_vers; uname -m; uptime; id -u
 sudo -n true 2>/dev/null && echo "sudo:ok" || echo "sudo:no"
 sysctl -n hw.model hw.memsize kern.boottime
-```
-
-Detect form factor and tools:
-
-```sh
 pmset -g batt 2>/dev/null
-for c in jq python3 brew system_profiler pmset powermetrics diskutil vm_stat \
-         memory_pressure top ps netstat lsof scutil ifconfig networksetup \
-         launchctl mdutil spctl csrutil tmutil fdesetup systemextensionsctl \
-         pkgutil socketfilterfw; do
-  printf '%-20s ' "$c"; command -v "$c" 2>/dev/null || echo -
+for c in jq python3 brew; do
+  printf '%-10s ' "$c"; command -v "$c" 2>/dev/null || echo -
 done
+diskutil info / 2>/dev/null
 ```
 
-Detect storage layout:
+If sudo is available, run the equivalent checks below once with `sudo -n` and
+record failures without retrying. If sudo is unavailable, immediately give the
+user this consolidated block and continue the unprivileged checks without
+further sudo attempts. Incorporate any returned output before drafting.
 
 ```sh
-diskutil list 2>/dev/null
+sudo /usr/bin/log show --last 1h --style compact --predicate 'process == "sudo"'
+sudo lsof -nP -iTCP -sTCP:LISTEN
+sudo systemsetup -getremotelogin
+sudo pfctl -s info
+sudo powermetrics --samplers thermal,cpu_power -n 1 -i 1000
 ```
 
-Record the capability matrix. Any check whose tools are missing is reported as
-"skipped (tool absent)" rather than failing the run.
+Record skipped checks and why. Do not inventory standard macOS tools before
+using them; guard only optional or missing commands.
 
-## Core checks
+## Core checks (always)
 
 ### A. Logs (unified log)
 
-Use a window variable so every query shares the same span:
+Capture the broad window once, then derive every routine summary from the
+cached NDJSON instead of rescanning the unified log:
 
 ```sh
 WINDOW="${WINDOW:-1h}"
-```
-
-Priority counts over the window:
-
-```sh
-for t in error fault; do
-  printf '%s: ' "$t"
-  /usr/bin/log show --last "$WINDOW" --style compact \
-    --predicate "messageType == $t" 2>/dev/null | wc -l
-done
-```
-
-Top spam sources, grouped by process (fall back to subsystem/image):
-
-```sh
+LOG_FILE="$(mktemp -t system-health-check-log.XXXXXX)"
+trap 'rm -f "$LOG_FILE"' EXIT HUP INT TERM
 /usr/bin/log show --last "$WINDOW" --style ndjson \
-  --predicate 'messageType == error' 2>/dev/null |
-  jq -r '(.process // .subsystem // .senderImagePath // "unknown")' |
-  sort | uniq -c | sort -rn | head -25
+  --predicate 'messageType == error OR messageType == fault' \
+  >"$LOG_FILE" 2>/dev/null
 ```
 
-Faults are rarer and more actionable than errors; inspect them directly:
+Counts and top sources:
 
 ```sh
-/usr/bin/log show --last "$WINDOW" --style compact \
-  --predicate 'messageType == fault' 2>/dev/null | tail -40
+LC_ALL=C jq -r '.messageType // "unknown"' "$LOG_FILE" | sort | uniq -c
+LC_ALL=C jq -r '(.process // .subsystem // .senderImagePath // "unknown")' \
+  "$LOG_FILE" | sort | uniq -c | sort -rn | head -15
 ```
 
-Kernel / hardware / I/O failures:
+Fault samples and kernel/hardware warnings:
 
 ```sh
-/usr/bin/log show --last "$WINDOW" --style compact \
-  --predicate 'process == "kernel"' 2>/dev/null |
+LC_ALL=C jq -r 'select((.messageType | tostring | ascii_downcase) == "fault") |
+  [.timestamp, (.process // "unknown"), .eventMessage] | @tsv' \
+  "$LOG_FILE" | tail -20
+LC_ALL=C jq -r 'select(.process == "kernel") | .eventMessage' "$LOG_FILE" |
   grep -aEi 'I/O error|panic|watchdog|SMC|thermal|throttle|disk|NVMe'
-netstat -s 2>/dev/null | grep -Eai 'bad|drop|error'
 ```
 
-Memory kills (Jetsam) and kernel panics live in diagnostic reports:
+If the capture fails or `jq` is unavailable, report unified-log checks as
+skipped; never interpret an empty capture as zero errors. If
+`~/.config/system-health-check-mac/benign.txt` exists, apply its patterns while
+summarizing the cached entries. Report total, suppressed, and residual counts
+plus the top residual sources. Derive first/last timestamps and representative
+messages for dominant findings from the same capture. Treat unmatched
+high-volume chatter as unclassified until its duration and impact are assessed;
+do not automatically call it benign.
+
+Diagnostic reports retain their four-day window:
 
 ```sh
 find /Library/Logs/DiagnosticReports -maxdepth 1 -name '*.ips' \
   -newermt '-4 days' -print 2>/dev/null | head -20
-grep -lEi 'JetsamEvent|panic' /Library/Logs/DiagnosticReports/*.ips 2>/dev/null |
-  head -10
 ```
 
-Auth activity (see also bundle G):
+Inspect only the returned reports for Jetsam or panic details. Authentication
+queries belong in targeted security deep-dives, not this broad capture.
+
+Remove the capture as soon as all summaries and samples are derived:
 
 ```sh
-/usr/bin/log show --last "$WINDOW" --style compact \
-  --predicate 'process == "authd" OR process == "sshd" OR process == "sudo"' \
-  2>/dev/null | grep -aEi 'fail|invalid|denied|authentication'
-last -n 10 2>/dev/null
-who 2>/dev/null
+rm -f "$LOG_FILE"
+trap - EXIT HUP INT TERM
+unset LOG_FILE
 ```
-
-Readable plain log files for context:
-
-```sh
-for f in /var/log/system.log /var/log/install.log; do
-  [ -r "$f" ] && echo "$f: readable" || echo "$f: not readable"
-done
-```
-
-**Benign filtering:** if `~/.config/system-health-check-mac/benign.txt` exists,
-read it (one regex per line, `#` comments allowed) and exclude matching messages
-from the spam ranking; report the suppressed count separately. Known benign
-classes on macOS: `authd ... invalidated because the client process`, DCP /
-`rtbuddy` kernel chatter, `mediaanalysisd`/Photos re-analysis errors, AirDrop
-sleep assertions.
 
 ### B. Services and boot
 
 ```sh
 launchctl list 2>/dev/null | awk 'NR>1 && $1=="-" && $2!="0" {print $1, $2, $3}'
 systemextensionsctl list 2>/dev/null
-ls /Library/LaunchDaemons /Library/LaunchAgents ~/Library/LaunchAgents 2>/dev/null
 pmset -g stats 2>/dev/null
-pmset -g assertions 2>/dev/null
 ```
 
 Notes:
@@ -156,19 +153,16 @@ Notes:
   a non-zero `Status` is the last exit code. `-9` is SIGKILL and is common for
   on-demand system agents - treat as INFO unless a third-party label is involved.
 - System extensions stuck in `terminated waiting to uninstall on reboot` are WARN.
-- Do **not** enumerate login items with `osascript`; the Automation/TCC prompt
-  hangs in a non-interactive session. Inventory LaunchAgents/LaunchDaemons instead.
+- Inventory LaunchAgents/LaunchDaemons only for a failed or suspicious job. Do
+  **not** enumerate login items with `osascript`; its Automation/TCC prompt hangs
+  in a non-interactive session.
 
 ### C. Storage
 
 ```sh
-df -hP 2>/dev/null
-diskutil apfs list 2>/dev/null
+df -hP / 2>/dev/null
 diskutil info disk0 2>/dev/null |
   grep -Ei 'device / media name|smart|solid state|capacity|file system'
-system_profiler SPStorageDataType 2>/dev/null |
-  grep -Ei 'media name|medium type|protocol|smart|capacity|free'
-tmutil listlocalsnapshots / 2>/dev/null
 mdutil -s / 2>/dev/null
 ```
 
@@ -177,47 +171,51 @@ Notes:
   boot disk first (`diskutil info /`), then check its physical store; `disk0` is
   the common case on Apple Silicon.
 - APFS inode counts are not meaningful; skip `df -i`.
-- Local snapshots consume purgeable space; high counts are INFO unless disk is low.
+- Run `diskutil apfs list`, `system_profiler SPStorageDataType`, or
+  `tmutil listlocalsnapshots /` only for low-disk, purgeable-space, or snapshot
+  findings.
 
 ### D. Memory and CPU
 
 ```sh
-vm_stat 2>/dev/null
 memory_pressure 2>/dev/null | tail -5
 sysctl vm.swapusage 2>/dev/null
-ps -Ao pcpu,pmem,pid,comm -r 2>/dev/null | head -12
 sysctl -n vm.loadavg 2>/dev/null
-top -l 1 -n 10 -o cpu -stats pid,command,cpu,mem 2>/dev/null | tail -12
+ps -Ao pcpu,pmem,pid,comm -r 2>/dev/null | head -12
 ```
 
 Notes:
 - `memory_pressure` reports a free percentage and is the closest analogue to
   Linux PSI; there is no `/proc/pressure` on macOS.
-- `powermetrics` requires root and is skipped when `sudo -n` fails.
+- Add `vm_stat` or a one-sample `top` only when pressure, swap, or load is
+  abnormal. `powermetrics` is covered by the preflight privileged block.
 
 ### E. Updates
 
 Intentionally out of scope. Do not run update checks; state this under FINDINGS.
 
-## Conditional bundles (only if supported)
+## Baseline and targeted bundles
+
+Run battery checks on laptops and security/backup state on every host. Use the
+remaining commands only for a user request, baseline anomaly, open action, or
+core finding.
 
 ### F. Power, thermal, network
 
-Laptops have a battery; desktops may report AC only.
+Laptop baseline:
 
 ```sh
 pmset -g batt 2>/dev/null
-pmset -g ps 2>/dev/null
-pmset -g assertions 2>/dev/null
 system_profiler SPPowerDataType 2>/dev/null |
   grep -Ei 'cycle count|condition|charge|capacity|health|maximum'
 pmset -g therm 2>/dev/null
-pmset -g log 2>/dev/null | grep -Ei 'wake|sleep|fail' | tail -20
 ```
 
-Network:
+Sleep/wake or network deep-dives:
 
 ```sh
+pmset -g assertions 2>/dev/null
+pmset -g log 2>/dev/null | grep -Ei 'wake|sleep|fail' | tail -20
 ifconfig 2>/dev/null
 networksetup -listallhardwareports 2>/dev/null
 scutil --dns 2>/dev/null | head -30
@@ -225,42 +223,43 @@ netstat -s 2>/dev/null | grep -Eai 'bad|drop|error'
 system_profiler SPAirPortDataType 2>/dev/null | grep -Ei 'status|signal|channel|phy'
 ```
 
-Notes:
-- `powermetrics --samplers thermal,cpu_power -n 1 -i 1000` needs root; print it for
-  manual use when `sudo -n` fails.
-- Sleep/wake blockers named `AirDrop` or third-party remote tools are usually
-  intentional; report as INFO/NOISE, not faults.
+Sleep/wake blockers named `AirDrop` or third-party remote tools are usually
+intentional; report them only when relevant.
 
 ### G. Security-light
+
+Baseline state:
 
 ```sh
 fdesetup status 2>/dev/null
 csrutil status 2>/dev/null
 spctl --status 2>/dev/null
 /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate 2>/dev/null
-who 2>/dev/null
+```
+
+For an authentication/listener concern or explicit user request only:
+
+```sh
+/usr/bin/log show --last "$WINDOW" --style compact \
+  --predicate 'process == "authd" OR process == "sshd" OR process == "sudo"' \
+  2>/dev/null | grep -aEi 'fail|invalid|denied|authentication'
 last -n 10 2>/dev/null
+who 2>/dev/null
 lsof -nP -iTCP -sTCP:LISTEN 2>/dev/null
 ```
 
-Privileged/manual when `sudo -n` is unavailable:
-
-```sh
-sudo /usr/bin/log show --last 1h --style compact --predicate 'process == "sudo"'
-sudo lsof -nP -iTCP -sTCP:LISTEN
-sudo systemsetup -getremotelogin
-sudo pfctl -s info
-```
+Do not rerun the privileged commands from preflight; use the user's output.
 
 ### H. Integrity and hygiene
 
 ```sh
 tmutil destinationinfo 2>/dev/null
-tmutil latestbackup 2>/dev/null
-systemextensionsctl list 2>/dev/null
-pkgutil --pkgs 2>/dev/null | wc -l
-command -v brew >/dev/null && brew doctor 2>/dev/null | head -30
 ```
+
+Run `tmutil latestbackup` only when a destination is configured. Run
+`pkgutil --pkgs` or `brew doctor` only for a package/Homebrew finding or explicit
+request; these inventories are not routine health metrics and do not change the
+updates-out-of-scope rule.
 
 ## Severity rubric
 
@@ -272,12 +271,14 @@ command -v brew >/dev/null && brew doctor 2>/dev/null | head -30
   system extensions waiting to uninstall).
 - **INFO** - noteworthy but harmless (no Time Machine destination, `-9` on-demand
   agents, sleep assertions, deprecated settings, cosmetic assertions).
-- **NOISE** - high-volume log spam with no functional impact. Report source,
-  volume, and first/last seen, and keep it out of the problem list.
+- **NOISE** - transient or explained high-volume spam with no functional impact.
+  Report source, volume, and first/last seen, and keep it out of the problem
+  list. Sustained retry loops are WARN, not NOISE.
 
 ## Report format requirements
 
-Plain text only. No markdown headings, tables, or bold.
+Plain text only. No markdown headings, tables, or bold. Aim for 30-45 lines,
+excluding manual command blocks and same-day UPDATES.
 
 **Header (exactly three lines, then a blank line):**
 
@@ -288,53 +289,64 @@ Monitoring window: last <N> <unit>
 ```
 
 **Sections** - uppercase labels on their own line, no colon:
-`FINDINGS`, `CAUSE`, `ACTION`.
+`FINDINGS`, `CAUSE`, `ACTION`; optional `UPDATES` for same-day follow-ups.
 
 **FINDINGS**
 
 - Use `- ` bullets, hard-wrapped at about 78 columns with continuation lines
   indented two spaces.
-- The **first bullet is the overall assessment**: normal/degraded plus what was
-  clean, before any warnings.
+- The **first bullet is the overall assessment**: normal/degraded plus the top
+  finding, without enumerating every clean check.
 - Put severity inline as a prefix: `- WARN: ...`, `- CRIT: ...`, `- INFO: ...`,
-  `- NOISE: ...`. No separate severity column.
-- Label carried-over items with their age: `- WARN (carried since <date>): ...`.
-- Include trends and deltas whenever a prior entry exists: `(was 93% on Oct 13/19)`,
-  `(+91)`, `unchanged since Sep`.
-- Quantify everything: counts over the window, percentages, temperatures, units
-  (`544 warnings/4d`, `28C`, `8.7 GiB`).
-- Collapse all spam into **one NOISE bullet**, grouped by source/class, with
-  volume and explanation. Never mix noise into WARN/CRIT.
-- State that system updates are out of scope.
-- Reference prior entries by date so consecutive reports read as a series.
+  `- NOISE: ...`.
+- Combine healthy storage/SMART, memory/swap, battery/thermal, and security
+  state into one INFO baseline bullet. Omit unchanged network, listener, and
+  package inventories unless relevant to a finding or user request.
+- Label carried items with their age and current status in one bullet. Do not
+  repeat their original root-cause history.
+- Quantify findings and material deltas with counts, rates, units, and prior
+  dates. Do not quantify stable details merely because they were collected.
+- Collapse confirmed spam into **one NOISE bullet** with total, suppressed, and
+  residual volume, top sources, duration, and impact. Keep sustained retry loops
+  in WARN/CRIT rather than hiding them in NOISE.
+- State once that system updates are out of scope. Reference prior entries only
+  for carried, resolved, or materially changed findings.
 
 **CAUSE**
 
-- Short causal bullets. Say explicitly when a reading is an unconfirmed single
-  measurement, and when noise has no functional impact.
+- Use short bullets only for new, worsened, or non-obvious findings. Identify
+  unconfirmed single measurements; do not restate healthy states or noise
+  explanations already covered by FINDINGS.
 
 **ACTION**
 
-- Imperative bullets, one per decision or follow-up. Include open decisions with
-  their age (`open since <date>`).
+- List only new or still-open follow-ups, with their age. Verify, close, or
+  escalate carried actions instead of copying them forward indefinitely.
 
 **Closing line (always last):**
 
 ```
-No remediation performed. Privileged results supplied by the user.
+No remediation performed by this check. Privileged results supplied by the user.
 ```
 
-Use `No remediation performed. Privileged checks skipped - manual commands above.`
-when sudo was unavailable and privileged checks were not run.
+When sudo was unavailable and privileged checks were not run, use:
+
+```
+No remediation performed by this check. Privileged checks skipped - manual commands above.
+```
 
 ## Maintenance log
 
 - Directory: `~/Documents/OS-maintenance/` (create with `mkdir -p` if missing).
 - File: `<YYYY-MM-DD>.txt` from `date +%Y-%m-%d`.
-- Content: the same plain-text FINDINGS/CAUSE/ACTION block above. Same format as
-  historical entries - no markdown, no tables.
-- **Write only after the user confirms.** Show the drafted entry first. If the
-  file already exists, append.
+- Content: the same plain-text FINDINGS/CAUSE/ACTION block above. Follow the
+  most recent historical entry's header, section names, and wrapping; when no
+  entries exist, use `template.txt` in this skill's directory.
+- For same-day rechecks or user-performed actions, append a short `UPDATES`
+  block with timestamped bullets instead of another full report. Finish with
+  the applicable closing line so it remains last.
+- **Write only after the user confirms.** Show the drafted entry or update
+  before writing.
 
 ## Notes
 

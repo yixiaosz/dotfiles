@@ -1,0 +1,23 @@
+System log maintenance - <YYYY-MM-DD>
+Host: <hostname> (<macOS version>, <chip/model>)
+Monitoring window: last <N> <unit>
+
+FINDINGS
+- <Normal/degraded overall assessment; top finding only>.
+- INFO: Baseline: root <pct>% (<used>/<total>), SMART <status>; memory
+  <free-pressure/swap>; battery/thermals <summary>; FileVault/SIP/Gatekeeper/
+  firewall <status>; backup <status>.
+- INFO: no baseline - first run; trends unavailable. System updates are out
+  of scope and were not checked.
+- WARN: <finding with count/rate, first/last seen, and impact>.
+- NOISE: <confirmed transient/explained volume with total, suppressed, and
+  residual counts, top sources, duration, and no functional impact>.
+
+CAUSE
+- <Only new, worsened, or non-obvious causes; flag unconfirmed measurements.>
+
+ACTION
+- <Only new or open follow-ups; include manual commands when needed.>
+- Continue monitoring <relevant metrics>.
+
+No remediation performed by this check. Privileged results supplied by the user.
